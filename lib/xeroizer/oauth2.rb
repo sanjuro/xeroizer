@@ -9,6 +9,25 @@ module Xeroizer
       @client = ::OAuth2::Client.new(client_key, client_secret, options)
     end
 
+    def authorize_url(params)
+      @client.authorize_url(params)
+    end
+
+    def request_token(params)
+      params[:token_method] = :post
+      token = @client.get_token(params)
+    end
+
+    def renew_access_token(client_key = nil, client_secret = nil, refresh_token = nil)
+      params = {
+        client_id: client_key,
+        client_secret: client_secret,
+        grant_type: 'refresh_token',
+        refresh_token: refresh_token
+      }
+      @client.get_token(params)
+    end
+
     def authorize_from_access(access_token, options = {})
       @access_token = ::OAuth2::AccessToken.new(client, access_token)
     end
