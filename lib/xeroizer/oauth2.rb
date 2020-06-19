@@ -28,6 +28,18 @@ module Xeroizer
       @client.get_token(params)
     end
 
+    def get_current_connection(access_token)
+      authentication_event_id = token.first["authentication_event_id"]
+
+      @client.authorize_from_access(xero_access_token.get_access_token)
+      current_connections = @client.current_connections
+
+      connection = current_connections.select{|value|
+        value.authEventId == authentication_event_id
+      }
+      connection.first
+    end
+
     def authorize_from_access(access_token, options = {})
       @access_token = ::OAuth2::AccessToken.new(client, access_token)
     end
