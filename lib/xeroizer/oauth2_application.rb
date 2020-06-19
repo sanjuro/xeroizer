@@ -34,9 +34,5 @@ module Xeroizer
         client.tenant_id = options[:tenant_id]
       end
     end
-
-    def current_connections
-      Connection.current_connections(client)
-    end
   end
 end

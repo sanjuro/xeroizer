@@ -28,16 +28,20 @@ module Xeroizer
       @client.get_token(params)
     end
 
-    def get_current_connection(access_token)
-      authentication_event_id = token.first["authentication_event_id"]
+    def get_current_connection(params)
+      authentication_event_id = params[:token].first["authentication_event_id"]
 
-      @client.authorize_from_access(xero_access_token.get_access_token)
+      @client.authorize_from_access(params[:token])
       current_connections = @client.current_connections
 
       connection = current_connections.select{|value|
         value.authEventId == authentication_event_id
       }
       connection.first
+    end
+
+    def current_connections
+      Connection.current_connections(client)
     end
 
     def authorize_from_access(access_token, options = {})
