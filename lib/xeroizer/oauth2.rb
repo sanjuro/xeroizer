@@ -1,6 +1,18 @@
 module Xeroizer
   class OAuth2
 
+    class OAuth2Error < XeroizerError; end
+    class RateLimitExceeded < OAuth2Error
+      def initialize(description, retry_after: nil, daily_limit_remaining: nil)
+        super(description)
+
+        @retry_after = retry_after
+        @daily_limit_remaining = @daily_limit_remaining
+      end
+
+      attr_reader :retry_after, :daily_limit_remaining
+    end
+
     attr_reader :client, :access_token
 
     attr_accessor :tenant_id
@@ -26,18 +38,6 @@ module Xeroizer
         refresh_token: refresh_token
       }
       @client.get_token(params)
-    end
-
-    def get_current_connection(params)
-      authentication_event_id = params[:token].first["authentication_event_id"]
-
-      @client.authorize_from_access(params[:token])
-      current_connections = @client.current_connections
-
-      connection = current_connections.select{|value|
-        value.authEventId == authentication_event_id
-      }
-      connection.first
     end
 
     def current_connections
