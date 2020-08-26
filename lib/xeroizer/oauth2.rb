@@ -40,10 +40,6 @@ module Xeroizer
       @client.get_token(params)
     end
 
-    def current_connections
-      Connection.current_connections(client)
-    end
-
     def authorize_from_access(access_token, options = {})
       @access_token = ::OAuth2::AccessToken.new(client, access_token)
     end

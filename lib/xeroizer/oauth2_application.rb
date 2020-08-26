@@ -2,7 +2,7 @@ module Xeroizer
   class OAuth2Application < GenericApplication
 
     extend Forwardable
-    def_delegators :client, :authorize_url, :request_token, :authorize_from_access, :current_connections, :renew_access_token,  :expires_at, :tenant_id, :tenant_id=
+    def_delegators :client, :authorize_url, :request_token, :authorize_from_access, :renew_access_token,  :expires_at, :tenant_id, :tenant_id=
 
     public
 
@@ -33,6 +33,10 @@ module Xeroizer
       if options[:tenant_id]
         client.tenant_id = options[:tenant_id]
       end
+    end
+
+    def current_connections
+      Connection.current_connections(client)
     end
   end
 end
